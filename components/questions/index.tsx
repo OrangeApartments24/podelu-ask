@@ -20,6 +20,7 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import { firebaseApp } from '../../pages/_app';
 import moment from 'moment';
 import 'moment/locale/ru';
+import Link from 'next/link';
 
 const Questions = () => {
     const [data, loading, error] = useCollection(
@@ -54,25 +55,42 @@ const Questions = () => {
 
         return data.docs.map((doc, index) => {
             return (
-                <Card w='full' bg='white' key={doc.id} p={4}>
-                    <VStack alignItems='flex-start'>
-                        <HStack>
-                            <Avatar size='sm'></Avatar>
-                        </HStack>
-                        <Text>{doc.data().text}</Text>
-                        <Text fontSize='sm' opacity={0.5}>
-                            {moment
-                                .unix(doc.data().created_at.seconds)
-                                .format('DD MMMM YYYY')}
-                        </Text>
-                    </VStack>
-                </Card>
+                <Link
+                    href={`/q/${doc.id}`}
+                    key={doc.id}
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Card
+                        w='full'
+                        bg='white'
+                        key={doc.id}
+                        p={4}
+                        _hover={{
+                            cursor: 'pointer',
+                            bg: 'gray.50',
+                        }}
+                    >
+                        <VStack alignItems='flex-start'>
+                            <HStack>
+                                <Avatar size='sm'></Avatar>
+                            </HStack>
+                            <Text>{doc.data().text}</Text>
+                            <Text fontSize='sm' opacity={0.5}>
+                                {moment
+                                    .unix(doc.data().created_at.seconds)
+                                    .format('DD MMMM YYYY')}
+                            </Text>
+                        </VStack>
+                    </Card>
+                </Link>
             );
         });
     }, [data]);
 
     return (
-        <VStack bg='gray.100' minH={'100vh'} p={4}>
+        <VStack bg='gray.100' minH={'100vh'} p={4} maxW={600} m='auto'>
             {renderQuestions}
             <Divider mt={'5!'} />
             <Textarea
