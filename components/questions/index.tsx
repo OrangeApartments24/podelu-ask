@@ -77,11 +77,18 @@ const Questions = () => {
                                 <Avatar size='sm'></Avatar>
                             </HStack>
                             <Text>{doc.data().text}</Text>
-                            <Text fontSize='sm' opacity={0.5}>
-                                {moment
-                                    .unix(doc.data().created_at.seconds)
-                                    .format('DD MMMM YYYY')}
-                            </Text>
+                            <HStack>
+                                <Text fontSize='sm' opacity={0.5}>
+                                    {moment
+                                        .unix(doc.data().created_at.seconds)
+                                        .format('DD MMMM YYYY')}
+                                </Text>
+                                {doc.data().category && (
+                                    <Text fontSize='sm' opacity={0.5}>
+                                        {doc.data().category}
+                                    </Text>
+                                )}
+                            </HStack>
                         </VStack>
                     </Card>
                 </Link>
@@ -90,7 +97,7 @@ const Questions = () => {
     }, [data]);
 
     return (
-        <VStack bg='gray.100' minH={'100vh'} p={4} maxW={600} m='auto'>
+        <VStack minH={'100vh'} p={4} maxW={600} m='auto'>
             {renderQuestions}
             <Divider mt={'5!'} />
             <Textarea
