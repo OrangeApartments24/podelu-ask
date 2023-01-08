@@ -53,47 +53,54 @@ const Questions = () => {
     const renderQuestions = useMemo(() => {
         if (!data?.docs) return null;
 
-        return data.docs.map((doc, index) => {
-            return (
-                <Link
-                    href={`/q/${doc.id}`}
-                    key={doc.id}
-                    style={{
-                        width: '100%',
-                    }}
-                >
-                    <Card
-                        w='full'
-                        bg='white'
+        return data.docs
+            .sort((a, b) => {
+                if (a.data().created_at < b.data().created_at) return 1;
+                if (a.data().created_at === b.data().created_at) return 0;
+                if (a.data().created_at > b.data().created_at) return -1;
+                return 0;
+            })
+            .map((doc, index) => {
+                return (
+                    <Link
+                        href={`/q/${doc.id}`}
                         key={doc.id}
-                        p={4}
-                        _hover={{
-                            cursor: 'pointer',
-                            bg: 'gray.50',
+                        style={{
+                            width: '100%',
                         }}
                     >
-                        <VStack alignItems='flex-start'>
-                            <HStack>
-                                <Avatar size='sm'></Avatar>
-                            </HStack>
-                            <Text>{doc.data().text}</Text>
-                            <HStack>
-                                <Text fontSize='sm' opacity={0.5}>
-                                    {moment
-                                        .unix(doc.data().created_at.seconds)
-                                        .format('DD MMMM YYYY')}
-                                </Text>
-                                {doc.data().category && (
+                        <Card
+                            w='full'
+                            bg='white'
+                            key={doc.id}
+                            p={4}
+                            _hover={{
+                                cursor: 'pointer',
+                                bg: 'gray.50',
+                            }}
+                        >
+                            <VStack alignItems='flex-start'>
+                                <HStack>
+                                    <Avatar size='sm'></Avatar>
+                                </HStack>
+                                <Text>{doc.data().text}</Text>
+                                <HStack>
                                     <Text fontSize='sm' opacity={0.5}>
-                                        {doc.data().category}
+                                        {moment
+                                            .unix(doc.data().created_at)
+                                            .format('DD MMMM YYYY')}
                                     </Text>
-                                )}
-                            </HStack>
-                        </VStack>
-                    </Card>
-                </Link>
-            );
-        });
+                                    {doc.data().category && (
+                                        <Text fontSize='sm' opacity={0.5}>
+                                            {doc.data().category}
+                                        </Text>
+                                    )}
+                                </HStack>
+                            </VStack>
+                        </Card>
+                    </Link>
+                );
+            });
     }, [data]);
 
     return (

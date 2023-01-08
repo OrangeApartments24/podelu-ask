@@ -56,18 +56,24 @@ const Question = () => {
         (doc: QueryDocumentSnapshot<DocumentData>) => {
             if (doc.data().text) return <Text>{doc.data().text}</Text>;
             if (
-                doc.data().url &&
-                (doc.data().url.includes('.jpg') ||
-                    doc.data().url.includes('.jpeg'))
+                doc.data().extension &&
+                (doc.data().extension.includes('.jpg') ||
+                    doc.data().extension.includes('.jpeg'))
             ) {
                 return <Image src={doc.data().url}></Image>;
-            } else if (doc.data().url && doc.data().url.includes('.ogg')) {
+            } else if (
+                doc.data().extension &&
+                doc.data().extension.includes('oga')
+            ) {
                 return (
                     <audio controls>
                         <source src={doc.data().url}></source>
                     </audio>
                 );
-            } else if (doc.data().url && doc.data().url.includes('.mp4')) {
+            } else if (
+                doc.data().extension &&
+                doc.data().extension.includes('mp4')
+            ) {
                 return (
                     <video
                         style={{
@@ -78,7 +84,7 @@ const Question = () => {
                         <source src={doc.data().url}></source>
                     </video>
                 );
-            } else {
+            } else if (doc.data) {
                 return (
                     <Button
                         fontSize={'sm'}
@@ -154,16 +160,24 @@ const Question = () => {
                     Ответов нет, будьте первым
                 </Text>
             )}
-            {answers?.docs.map((doc, index) => {
-                return (
-                    <Card
-                        w='full'
-                        bg='white'
-                        p={4}
-                        key={doc.id}
-                        position='relative'
-                    >
-                        <CloseIcon
+            {answers?.docs
+                .sort((a, b) => {
+                    if (a.data().created_at < b.data().created_at) return -1;
+                    if (a.data().created_at === b.data().created_at) return 0;
+                    if (a.data().created_at > b.data().created_at) return 1;
+                    return 0;
+                })
+                .filter((doc) => doc.data().text || doc.data().url)
+                .map((doc, index) => {
+                    return (
+                        <Card
+                            w='full'
+                            bg='white'
+                            p={4}
+                            key={doc.id}
+                            position='relative'
+                        >
+                            {/* <CloseIcon
                             cursor='pointer'
                             _hover={{
                                 bg: 'gray.400',
@@ -178,11 +192,11 @@ const Question = () => {
                             borderRadius='lg'
                             p={1.5}
                             bg='gray.500'
-                        />
-                        {renderAnswer(doc)}
-                    </Card>
-                );
-            })}
+                        /> */}
+                            {renderAnswer(doc)}
+                        </Card>
+                    );
+                })}
             <AddAnswer />
         </VStack>
     );
