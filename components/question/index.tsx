@@ -108,9 +108,11 @@ const Question = () => {
     );
 
     const renderCategories = useMemo(() => {
-        return ['Не выбрано'].concat(categoriesList).map((c, i) => {
-            return <option>{c}</option>;
-        });
+        return ['Не выбрано']
+            .concat(categoriesList.map((c) => c.name))
+            .map((c, i) => {
+                return <option>{c}</option>;
+            });
     }, [categoriesList]);
 
     const changeCategoryHandler = useCallback(

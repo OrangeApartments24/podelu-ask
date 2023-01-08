@@ -21,6 +21,7 @@ import { firebaseApp } from '../../pages/_app';
 import moment from 'moment';
 import 'moment/locale/ru';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Questions = () => {
     const [data, loading, error] = useCollection(
@@ -29,6 +30,8 @@ const Questions = () => {
             snapshotListenOptions: { includeMetadataChanges: true },
         }
     );
+    const router = useRouter();
+    const { name } = router.query;
 
     const [questionText, setQuestionText] = useState('');
 
@@ -60,6 +63,7 @@ const Questions = () => {
                 if (a.data().created_at > b.data().created_at) return -1;
                 return 0;
             })
+            .filter((doc) => doc.data().category === name)
             .map((doc, index) => {
                 return (
                     <Link
@@ -72,7 +76,6 @@ const Questions = () => {
                         <Card
                             w='full'
                             bg='white'
-                            key={doc.id}
                             p={4}
                             _hover={{
                                 cursor: 'pointer',
@@ -101,7 +104,7 @@ const Questions = () => {
                     </Link>
                 );
             });
-    }, [data]);
+    }, [data, name]);
 
     return (
         <VStack minH={'100vh'} p={4} maxW={600} m='auto'>
