@@ -108,8 +108,18 @@ const Questions = () => {
 
     return (
         <VStack minH={'100vh'} p={4} maxW={600} m='auto'>
+            <Link
+                href='/'
+                style={{
+                    width: '100%',
+                }}
+            >
+                <Button mr={'auto!'} size='sm'>
+                    К списку категорий
+                </Button>
+            </Link>
             {renderQuestions}
-            <Divider mt={'5!'} />
+            {/* <Divider mt={'5!'} />
             <Textarea
                 onChange={questionChangeHandler}
                 placeholder='Введите вопрос'
@@ -122,7 +132,7 @@ const Questions = () => {
                 colorScheme={'orange'}
             >
                 Задать вопрос
-            </Button>
+            </Button> */}
         </VStack>
     );
 };

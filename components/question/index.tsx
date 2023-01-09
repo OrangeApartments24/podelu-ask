@@ -130,16 +130,15 @@ const Question = () => {
 
     return (
         <VStack maxW={600} m='auto' p={5}>
-            <Link
-                href='/'
-                style={{
-                    width: '100%',
+            <Button
+                mr={'auto!'}
+                size='sm'
+                onClick={() => {
+                    window.history.go(-1);
                 }}
             >
-                <Button mr={'auto!'} size='sm'>
-                    К списку вопросов
-                </Button>
-            </Link>
+                К списку вопросов
+            </Button>
             <Heading fontSize='20px' mr='auto!'>
                 Вопрос
             </Heading>
@@ -199,7 +198,7 @@ const Question = () => {
                         </Card>
                     );
                 })}
-            <AddAnswer />
+            {/* <AddAnswer /> */}
         </VStack>
     );
 };
