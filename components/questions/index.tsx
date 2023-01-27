@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { firebaseApp } from '../../pages/_app';
 import moment from 'moment';
-import 'moment/locale/ru';
+
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -56,27 +56,31 @@ const Questions = () => {
     const renderQuestions = useMemo(() => {
         if (!data?.docs) return null;
 
-        return data.docs
-            .sort((a, b) => {
-                if (a.data().created_at < b.data().created_at) return 1;
-                if (a.data().created_at === b.data().created_at) return 0;
-                if (a.data().created_at > b.data().created_at) return -1;
-                return 0;
-            })
-            .filter((doc) => doc.data().category === name)
-            .map((doc, index) => {
-                return (
-                    <Link
-                        href={`/q/${doc.id}`}
-                        key={doc.id}
-                        style={{
-                            width: '100%',
-                        }}
-                    >
+        return (
+            data.docs
+                .sort((a, b) => {
+                    if (a.data().created_at < b.data().created_at) return 1;
+                    if (a.data().created_at === b.data().created_at) return 0;
+                    if (a.data().created_at > b.data().created_at) return -1;
+                    return 0;
+                })
+                // .filter((doc) => doc.data().category === name)
+                .map((doc, index) => {
+                    return (
+                        // <Link
+                        //     href={`/q/${doc.id}`}
+                        //     key={doc.id}
+                        //     style={{
+                        //         width: '100%',
+                        //     }}
+                        // >
                         <Card
                             w='full'
                             bg='white'
                             p={4}
+                            onClick={() => {
+                                window.open(`/q/${doc.id}`, '_blank');
+                            }}
                             _hover={{
                                 cursor: 'pointer',
                                 bg: 'gray.50',
@@ -101,9 +105,10 @@ const Questions = () => {
                                 </HStack>
                             </VStack>
                         </Card>
-                    </Link>
-                );
-            });
+                        // </Link>
+                    );
+                })
+        );
     }, [data, name]);
 
     return (
@@ -119,7 +124,7 @@ const Questions = () => {
                 </Button>
             </Link>
             {renderQuestions}
-            {/* <Divider mt={'5!'} />
+            <Divider mt={'5!'} />
             <Textarea
                 onChange={questionChangeHandler}
                 placeholder='Введите вопрос'
@@ -132,7 +137,7 @@ const Questions = () => {
                 colorScheme={'orange'}
             >
                 Задать вопрос
-            </Button> */}
+            </Button>
         </VStack>
     );
 };

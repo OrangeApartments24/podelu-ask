@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 import { initializeApp } from 'firebase/app';
 import 'firebase/firestore';
+import 'moment/locale/ru';
 
 export const firebaseApp = initializeApp({
     apiKey: 'AIzaSyDln11HXwFB7pIYD_ySyIl_j1RWnurxJ34',

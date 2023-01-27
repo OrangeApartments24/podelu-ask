@@ -198,7 +198,7 @@ const Question = () => {
                         </Card>
                     );
                 })}
-            {/* <AddAnswer /> */}
+            <AddAnswer />
         </VStack>
     );
 };
