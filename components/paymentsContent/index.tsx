@@ -217,13 +217,10 @@ const PaymentsContent = () => {
     return (
         <VStack
             maxW={'600px'}
-            // mx={'auto'}
+            mx={'auto'}
             bg='white'
-            borderRadius={'lg'}
-            maxHeight={'calc(100vh - 40px)'}
+            maxHeight={'calc(100vh - 100px)'}
             p={4}
-            my={'20px'}
-            mx={'20px'}
             overflow='hidden'
             spacing={4}
         >
