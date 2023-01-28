@@ -1,5 +1,7 @@
+import { AddIcon } from '@chakra-ui/icons';
 import {
     Box,
+    Button,
     Heading,
     HStack,
     Input,
@@ -14,9 +16,16 @@ import {
     Th,
     Thead,
     Tr,
+    useToast,
     VStack,
 } from '@chakra-ui/react';
-import { collection, getFirestore } from 'firebase/firestore';
+import {
+    collection,
+    doc,
+    getFirestore,
+    setDoc,
+    Timestamp,
+} from 'firebase/firestore';
 import { has } from 'immer/dist/internal';
 import moment from 'moment';
 import Link from 'next/link';
@@ -40,6 +49,40 @@ const PaymentsContent = () => {
 
     const [users, setUsers] = useState<{ username: string; id: number }[]>([]);
     const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+
+    const [customUserId, setCustomUserId] = useState('');
+    const [customPrice, setCustomPrice] = useState('');
+    const toast = useToast();
+
+    const addPaymentHandler = useCallback(async () => {
+        if (!customPrice || !customUserId) {
+            toast({
+                title: 'Заполните все поля',
+                description: 'При добавлении платежа',
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        await setDoc(
+            doc(getFirestore(firebaseApp), 'payments', crypto.randomUUID()),
+            {
+                price: parseInt(customPrice),
+                from: parseInt(customUserId),
+                isCash: true,
+                created_at: Timestamp.fromDate(new Date(date)),
+            }
+        ).then(() => {
+            toast({
+                title: 'Платёж добавлен',
+                status: 'success',
+                duration: 2000,
+                isClosable: true,
+            });
+        });
+    }, [customUserId, customPrice, date]);
 
     useEffect(() => {
         fetch('/api/users')
@@ -273,6 +316,26 @@ const PaymentsContent = () => {
                 <Text>
                     Итого: <b>{numberWithSpaces(totalSum) || 0} ₽</b>
                 </Text>
+                <Heading mt={4} size='sm'>
+                    Платёж наличными
+                </Heading>
+                <HStack mt={2}>
+                    <Input
+                        value={customUserId}
+                        onChange={(e) => setCustomUserId(e.target.value)}
+                        size={'md'}
+                        placeholder='ID'
+                    />
+                    <Input
+                        value={customPrice}
+                        onChange={(e) => setCustomPrice(e.target.value)}
+                        size={'md'}
+                        placeholder='Сумма'
+                    />
+                    <Button onClick={addPaymentHandler} colorScheme={'orange'}>
+                        <AddIcon />
+                    </Button>
+                </HStack>
             </Box>
         </VStack>
     );

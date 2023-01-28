@@ -34,6 +34,11 @@ export default async function handler(
     const data = await getUsers();
 
     res.status(200).json({
-        users: data.users.map((u: any) => ({ id: u.id, username: u.username })),
+        users: data.users.map((u: any) => ({
+            id: u.id,
+            username: u.username,
+            firstname: u.firstName,
+            lastname: u.lastName,
+        })),
     });
 }
