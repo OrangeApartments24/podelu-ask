@@ -1,4 +1,4 @@
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import {
     Box,
     Button,
@@ -6,6 +6,8 @@ import {
     HStack,
     Input,
     Progress,
+    Select,
+    SimpleGrid,
     Spinner,
     Table,
     TableContainer,
@@ -51,6 +53,9 @@ const PaymentsContent = () => {
     const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
 
     const [customUserId, setCustomUserId] = useState('');
+    const [customType, setCustomType] = useState<
+        'Robokassa' | 'Сбер Денис' | 'Сбер Коля' | 'Бонусы'
+    >('Robokassa');
     const [customPrice, setCustomPrice] = useState('');
     const toast = useToast();
 
@@ -71,7 +76,9 @@ const PaymentsContent = () => {
             {
                 price: parseInt(customPrice),
                 from: parseInt(customUserId),
-                isCash: true,
+                isCash:
+                    customType === 'Сбер Коля' || customType === 'Сбер Денис',
+                type: customType,
                 created_at: Timestamp.fromDate(new Date(date)),
             }
         ).then(() => {
@@ -82,7 +89,7 @@ const PaymentsContent = () => {
                 isClosable: true,
             });
         });
-    }, [customUserId, customPrice, date]);
+    }, [customUserId, customPrice, date, customType]);
 
     useEffect(() => {
         fetch('/api/users')
@@ -159,6 +166,13 @@ const PaymentsContent = () => {
                                 <>Нет ника</>
                             )}
                         </Text>
+                        <HStack align={'center'} spacing={1} mt={3}>
+                            <InfoOutlineIcon
+                                position={'relative'}
+                                top={'0px'}
+                            />
+                            <Text>{d.data().type || 'Robokassa'}</Text>
+                        </HStack>
                     </Box>
                 );
             });
@@ -317,9 +331,9 @@ const PaymentsContent = () => {
                     Итого: <b>{numberWithSpaces(totalSum) || 0} ₽</b>
                 </Text>
                 <Heading mt={4} size='sm'>
-                    Платёж наличными
+                    Добавить вручную
                 </Heading>
-                <HStack mt={2}>
+                <SimpleGrid columns={2} mt={2} gap={2}>
                     <Input
                         value={customUserId}
                         onChange={(e) => setCustomUserId(e.target.value)}
@@ -332,10 +346,20 @@ const PaymentsContent = () => {
                         size={'md'}
                         placeholder='Сумма'
                     />
+                    <Select
+                        value={customType}
+                        onChange={(e) => setCustomType(e.target.value as any)}
+                        size={'md'}
+                    >
+                        <option>Robokassa</option>
+                        <option>Сбер Денис</option>
+                        <option>Сбер Коля</option>
+                        <option>Бонусы</option>
+                    </Select>
                     <Button onClick={addPaymentHandler} colorScheme={'orange'}>
                         <AddIcon />
                     </Button>
-                </HStack>
+                </SimpleGrid>
             </Box>
         </VStack>
     );
