@@ -106,7 +106,6 @@ const PaymentsContent = () => {
             const currentUser = users.find(
                 (u: any) => parseInt(u.id) === parseInt(id)
             );
-            console.log(id);
             if (currentUser) return `@${currentUser.username}`;
             return 'Нет ника';
         },
@@ -259,6 +258,22 @@ const PaymentsContent = () => {
         }, 0);
     }, [data, date]);
 
+    const sberSum = useMemo(() => {
+        if (!data) return 0;
+        return data.docs.reduce((res: any, current: any) => {
+            const m = moment.unix(current.data().created_at.seconds);
+
+            if (
+                m.isBefore(moment(date, 'YYYY-MM-DD').add(1, 'day')) &&
+                current.data().type === 'Сбер Коля'
+            ) {
+                return (res += current.data().price);
+            } else {
+                return res;
+            }
+        }, 0);
+    }, [data, date]);
+
     const totalSum = useMemo(() => {
         if (!data) return 0;
         return data.docs.reduce((res: any, current: any) => {
@@ -270,6 +285,72 @@ const PaymentsContent = () => {
             }
         }, 0);
     }, [data, date]);
+
+    const telegramReportText = useMemo(() => {
+        let paymentsText = `#отчёт ${moment(date, 'YYYY-MM-DD').format(
+            'DD.MM.YY'
+        )}\nСегодня пришло:\n\n`;
+
+        data?.docs
+            .sort((a: any, b: any) => {
+                if (a.data().created_at.seconds < b.data().created_at.seconds)
+                    return 1;
+                if (a.data().created_at.seconds === b.data().created_at.seconds)
+                    return 0;
+                if (a.data().created_at.seconds > b.data().created_at.seconds)
+                    return -1;
+                return 0;
+            })
+            .filter((d) => {
+                return moment
+                    .unix(d.data().created_at.seconds)
+                    .isSame(date, 'day');
+            })
+            .map((d) => {
+                const nick = getNick(d.data().from);
+                const hasNick = nick.includes('@');
+
+                paymentsText += `Пришло ${d.data().price}₽ от ${nick} ${
+                    d.data().type === 'Robokassa' || !d.data().type
+                        ? ''
+                        : ` — ${d.data().type}`
+                } \n`;
+            });
+
+        paymentsText += `\n\nЗа сегодня: ${
+            numberWithSpaces(todaySum) || 0
+        } ₽\n`;
+
+        paymentsText += `Октябрь: ${
+            numberWithSpaces(159245 + octoberSum) || 0
+        } ₽\n`;
+
+        paymentsText += `Ноябрь: ${
+            numberWithSpaces(784195 + novemberSum) || 0
+        } ₽\n`;
+
+        paymentsText += `Декабрь: ${
+            numberWithSpaces(1054187 + decemberSum) || 0
+        } ₽\n`;
+
+        paymentsText += `Январь: ${
+            numberWithSpaces(537190 + januarySum) || 0
+        } ₽\n`;
+
+        paymentsText += `Сбербанк Николай: ${
+            numberWithSpaces(71350 + sberSum) || 0
+        } ₽\n`;
+
+        paymentsText += `Итого: ${
+            numberWithSpaces(2534817 + totalSum) || 0
+        } ₽\n`;
+
+        return paymentsText;
+    }, [data, date]);
+
+    useEffect(() => {
+        console.log(telegramReportText);
+    }, [telegramReportText]);
 
     return (
         <VStack
@@ -315,20 +396,29 @@ const PaymentsContent = () => {
                 </Text>
 
                 <Text>
-                    Октябрь: <b>{numberWithSpaces(octoberSum) || 0} ₽</b>
+                    Октябрь:{' '}
+                    <b>{numberWithSpaces(159245 + octoberSum) || 0} ₽</b>
                 </Text>
                 <Text>
-                    Ноябрь: <b>{numberWithSpaces(novemberSum) || 0} ₽</b>
+                    Ноябрь:{' '}
+                    <b>{numberWithSpaces(784195 + novemberSum) || 0} ₽</b>
                 </Text>
                 <Text>
-                    Декабрь: <b>{numberWithSpaces(decemberSum) || 0} ₽</b>
+                    Декабрь:{' '}
+                    <b>{numberWithSpaces(1054187 + decemberSum) || 0} ₽</b>
                 </Text>
                 <Text>
-                    Январь: <b>{numberWithSpaces(januarySum) || 0} ₽</b>
+                    Январь:{' '}
+                    <b>{numberWithSpaces(537190 + januarySum) || 0} ₽</b>
                 </Text>
 
                 <Text>
-                    Итого: <b>{numberWithSpaces(totalSum) || 0} ₽</b>
+                    Сбербанк Николай:{' '}
+                    <b>{numberWithSpaces(71350 + sberSum) || 0} ₽</b>
+                </Text>
+
+                <Text>
+                    Итого: <b>{numberWithSpaces(2534817 + totalSum) || 0} ₽</b>
                 </Text>
                 <Heading mt={4} size='sm'>
                     Добавить вручную
@@ -358,6 +448,16 @@ const PaymentsContent = () => {
                     </Select>
                     <Button onClick={addPaymentHandler} colorScheme={'orange'}>
                         <AddIcon />
+                    </Button>
+                    <Button
+                        gridColumn={'-1/1'}
+                        onClick={async () => {
+                            await navigator.clipboard.writeText(
+                                telegramReportText
+                            );
+                        }}
+                    >
+                        Скопировать отчёт
                     </Button>
                 </SimpleGrid>
             </Box>
