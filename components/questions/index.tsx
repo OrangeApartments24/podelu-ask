@@ -90,7 +90,12 @@ const Questions = () => {
                                 <HStack>
                                     <Avatar size='sm'></Avatar>
                                 </HStack>
-                                <Text>{doc.data().text}</Text>
+                                <Text
+                                    whiteSpace={'pre-wrap'}
+                                    wordBreak='break-word'
+                                >
+                                    {doc.data().text}
+                                </Text>
                                 <HStack>
                                     <Text fontSize='sm' opacity={0.5}>
                                         {moment

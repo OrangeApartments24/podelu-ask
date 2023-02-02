@@ -111,13 +111,23 @@ const UsersContent = () => {
                 );
 
                 const isProlong =
-                    parseInt(moment().format('DD')) >= 25 &&
-                    userPayments.some((p) => {
-                        return (
-                            moment.unix(p.data().created_at.seconds).month() ===
-                            moment().month()
-                        );
-                    });
+                    (parseInt(moment().format('DD')) >= 25 &&
+                        userPayments.some((p) => {
+                            return (
+                                moment
+                                    .unix(p.data().created_at.seconds)
+                                    .month() === moment().month()
+                            );
+                        })) ||
+                    (parseInt(moment().format('DD')) < 25 &&
+                        userPayments.some((p) => {
+                            return (
+                                moment
+                                    .unix(p.data().created_at.seconds)
+                                    .month() ===
+                                moment().month() - 1
+                            );
+                        }));
 
                 return (
                     isProlong ||
@@ -137,13 +147,23 @@ const UsersContent = () => {
                 );
 
                 const isProlong =
-                    parseInt(moment().format('DD')) >= 25 &&
-                    userPayments.some((p) => {
-                        return (
-                            moment.unix(p.data().created_at.seconds).month() ===
-                            moment().month()
-                        );
-                    });
+                    (parseInt(moment().format('DD')) >= 25 &&
+                        userPayments.some((p) => {
+                            return (
+                                moment
+                                    .unix(p.data().created_at.seconds)
+                                    .month() === moment().month()
+                            );
+                        })) ||
+                    (parseInt(moment().format('DD')) < 25 &&
+                        userPayments.some((p) => {
+                            return (
+                                moment
+                                    .unix(p.data().created_at.seconds)
+                                    .month() ===
+                                moment().month() - 1
+                            );
+                        }));
 
                 if (autopays.includes(String(a.id))) return -1;
                 if (mentors.includes(String(a.id))) return -1;
@@ -160,13 +180,23 @@ const UsersContent = () => {
                 const paymentsCount = userPayments.length;
 
                 const isProlong =
-                    parseInt(moment().format('DD')) >= 25 &&
-                    userPayments.some((p) => {
-                        return (
-                            moment.unix(p.data().created_at.seconds).month() ===
-                            moment().month()
-                        );
-                    });
+                    (parseInt(moment().format('DD')) >= 25 &&
+                        userPayments.some((p) => {
+                            return (
+                                moment
+                                    .unix(p.data().created_at.seconds)
+                                    .month() === moment().month()
+                            );
+                        })) ||
+                    (parseInt(moment().format('DD')) < 25 &&
+                        userPayments.some((p) => {
+                            return (
+                                moment
+                                    .unix(p.data().created_at.seconds)
+                                    .month() ===
+                                moment().month() - 1
+                            );
+                        }));
 
                 return (
                     <Box
