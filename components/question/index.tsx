@@ -54,7 +54,12 @@ const Question = () => {
 
     const renderAnswer = useCallback(
         (doc: QueryDocumentSnapshot<DocumentData>) => {
-            if (doc.data().text) return <Text>{doc.data().text}</Text>;
+            if (doc.data().text)
+                return (
+                    <Text whiteSpace={'pre-wrap'} wordBreak='break-word'>
+                        {doc.data().text}
+                    </Text>
+                );
             if (
                 doc.data().extension &&
                 (doc.data().extension.includes('.jpg') ||
@@ -143,7 +148,9 @@ const Question = () => {
                 Вопрос
             </Heading>
             <Card w='full' bg='white' p={4}>
-                <Text>{question?.data()?.text}</Text>
+                <Text whiteSpace={'pre-wrap'} wordBreak='break-word'>
+                    {question?.data()?.text}
+                </Text>
             </Card>
             <Card p={2} bg='white' w='full'>
                 <FormControl>
