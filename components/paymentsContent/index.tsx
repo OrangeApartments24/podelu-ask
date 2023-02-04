@@ -258,6 +258,23 @@ const PaymentsContent = () => {
         }, 0);
     }, [data, date]);
 
+    const febrarySum = useMemo(() => {
+        if (!data) return 0;
+        return data.docs.reduce((res: any, current: any) => {
+            const m = moment.unix(current.data().created_at.seconds);
+
+            if (
+                m.year() === 2023 &&
+                m.month() === 1 &&
+                m.isBefore(moment(date, 'YYYY-MM-DD').add(1, 'day'))
+            ) {
+                return (res += current.data().price);
+            } else {
+                return res;
+            }
+        }, 0);
+    }, [data, date]);
+
     const sberSum = useMemo(() => {
         if (!data) return 0;
         return data.docs.reduce((res: any, current: any) => {
@@ -337,6 +354,8 @@ const PaymentsContent = () => {
             numberWithSpaces(537190 + januarySum) || 0
         } ₽\n`;
 
+        paymentsText += `Февраль: ${numberWithSpaces(0 + febrarySum) || 0} ₽\n`;
+
         paymentsText += `Сбербанк Николай: ${
             numberWithSpaces(71350 + sberSum) || 0
         } ₽\n`;
@@ -410,6 +429,10 @@ const PaymentsContent = () => {
                 <Text>
                     Январь:{' '}
                     <b>{numberWithSpaces(537190 + januarySum) || 0} ₽</b>
+                </Text>
+
+                <Text>
+                    Февраль: <b>{numberWithSpaces(0 + febrarySum) || 0} ₽</b>
                 </Text>
 
                 <Text>

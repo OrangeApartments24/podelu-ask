@@ -18,20 +18,18 @@ export default async function handler(
 
     await client.connect();
 
-    const getUsers = async () => {
-        const result = await client.invoke(
-            new Api.messages.GetCommonChats({
-                userId: 5826874137,
-                maxId: 0,
-                limit: 100,
-            })
-        );
-        return result;
-    };
-
-    const data = await getUsers();
+    const result = await client.invoke(
+        new Api.messages.GetDialogs({
+            offsetDate: 0,
+            offsetId: 0,
+            offsetPeer: 'username',
+            limit: 100,
+            hash: BigInt('-4156887774564'),
+            excludePinned: true,
+        })
+    );
 
     res.status(200).json({
-        chats: data.chats,
+        data: result,
     });
 }
