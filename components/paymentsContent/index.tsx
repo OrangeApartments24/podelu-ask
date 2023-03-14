@@ -112,6 +112,46 @@ const PaymentsContent = () => {
         [users]
     );
 
+    console.log(
+        JSON.stringify(
+            data?.docs
+                .sort((a: any, b: any) => {
+                    if (
+                        a.data().created_at.seconds <
+                        b.data().created_at.seconds
+                    )
+                        return 1;
+                    if (
+                        a.data().created_at.seconds ===
+                        b.data().created_at.seconds
+                    )
+                        return 0;
+                    if (
+                        a.data().created_at.seconds >
+                        b.data().created_at.seconds
+                    )
+                        return -1;
+                    return 0;
+                })
+                .filter((d) => {
+                    return (
+                        moment.unix(d.data().created_at.seconds).month() ===
+                            0 &&
+                        (d.data().type === 'Сбер Денис' ||
+                            d.data().type === 'Сбер Коля')
+                    );
+                })
+                .map((p) => ({
+                    data: moment
+                        .unix(p.data().created_at.seconds)
+                        .format('DD MMMM YYYY'),
+                    nick: getNick(p.data().from),
+                    type: p.data().type || 'Robokassa',
+                    price: p.data().price,
+                }))
+        )
+    );
+
     const renderPayments = useMemo(() => {
         return data?.docs
             .sort((a: any, b: any) => {
@@ -366,10 +406,6 @@ const PaymentsContent = () => {
 
         return paymentsText;
     }, [data, date]);
-
-    useEffect(() => {
-        console.log(telegramReportText);
-    }, [telegramReportText]);
 
     return (
         <VStack
