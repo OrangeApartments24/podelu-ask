@@ -66,50 +66,50 @@ const Questions = () => {
             .filter((doc) => doc.data().category === name)
             .map((doc, index) => {
                 return (
-                    // <Link
-                    //     href={`/q/${doc.id}`}
-                    //     key={doc.id}
-                    //     style={{
-                    //         width: '100%',
-                    //     }}
-                    // >
-                    <Card
-                        w='full'
-                        bg='white'
-                        p={4}
-                        onClick={() => {
-                            window.open(`/q/${doc.id}`, '_blank');
-                        }}
-                        _hover={{
-                            cursor: 'pointer',
-                            bg: 'gray.50',
+                    <Link
+                        href={`/q/${doc.id}`}
+                        key={doc.id}
+                        style={{
+                            width: '100%',
                         }}
                     >
-                        <VStack alignItems='flex-start'>
-                            <HStack>
-                                <Avatar size='sm'></Avatar>
-                            </HStack>
-                            <Text
-                                whiteSpace={'pre-wrap'}
-                                wordBreak='break-word'
-                            >
-                                {doc.data().text}
-                            </Text>
-                            <HStack>
-                                <Text fontSize='sm' opacity={0.5}>
-                                    {moment
-                                        .unix(doc.data().created_at)
-                                        .format('DD MMMM YYYY')}
+                        <Card
+                            w='full'
+                            bg='white'
+                            p={4}
+                            // onClick={() => {
+                            //     window.open(`/q/${doc.id}`, '_blank');
+                            // }}
+                            _hover={{
+                                cursor: 'pointer',
+                                bg: 'gray.50',
+                            }}
+                        >
+                            <VStack alignItems='flex-start'>
+                                <HStack>
+                                    <Avatar size='sm'></Avatar>
+                                </HStack>
+                                <Text
+                                    whiteSpace={'pre-wrap'}
+                                    wordBreak='break-word'
+                                >
+                                    {doc.data().text}
                                 </Text>
-                                {doc.data().category && (
+                                <HStack>
                                     <Text fontSize='sm' opacity={0.5}>
-                                        {doc.data().category}
+                                        {moment
+                                            .unix(doc.data().created_at)
+                                            .format('DD MMMM YYYY')}
                                     </Text>
-                                )}
-                            </HStack>
-                        </VStack>
-                    </Card>
-                    // </Link>
+                                    {doc.data().category && (
+                                        <Text fontSize='sm' opacity={0.5}>
+                                            {doc.data().category}
+                                        </Text>
+                                    )}
+                                </HStack>
+                            </VStack>
+                        </Card>
+                    </Link>
                 );
             });
     }, [data, name]);
