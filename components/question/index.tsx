@@ -164,16 +164,18 @@ const Question = () => {
                     <FormLabel>Категория</FormLabel>
                     {isLogin ? (
                         <Select
+                            // @ts-ignore
                             value={question?.data().category}
                             onChange={changeCategoryHandler}
                         >
                             {renderCategories}
                         </Select>
-                    ) : (
+                    ) : question ? (
                         <Heading size={'sm'} m={'0!'}>
+                            {/* @ts-ignore */}
                             {question?.data().category || 'Без категории'}
                         </Heading>
-                    )}
+                    ) : null}
                 </FormControl>
             </Card>
             <Heading fontSize='20px' mr='auto!' mt={'8!'}>
