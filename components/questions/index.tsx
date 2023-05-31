@@ -22,6 +22,7 @@ import moment from 'moment';
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useAppSelector } from '../../hooks/redux';
 
 const Questions = () => {
     const [data, loading, error] = useCollection(
@@ -31,6 +32,7 @@ const Questions = () => {
         }
     );
     const router = useRouter();
+    const { isLogin } = useAppSelector((store) => store.basic);
     const { name } = router.query;
 
     const [questionText, setQuestionText] = useState('');
@@ -127,20 +129,24 @@ const Questions = () => {
                 </Button>
             </Link>
             {renderQuestions}
-            <Divider mt={'5!'} />
-            <Textarea
-                onChange={questionChangeHandler}
-                placeholder='Введите вопрос'
-                bg='white'
-                value={questionText}
-            />
-            <Button
-                onClick={addQuestionHandler}
-                w='full'
-                colorScheme={'orange'}
-            >
-                Задать вопрос
-            </Button>
+            {isLogin && (
+                <>
+                    <Divider mt={'5!'} />
+                    <Textarea
+                        onChange={questionChangeHandler}
+                        placeholder='Введите вопрос'
+                        bg='white'
+                        value={questionText}
+                    />
+                    <Button
+                        onClick={addQuestionHandler}
+                        w='full'
+                        colorScheme={'orange'}
+                    >
+                        Задать вопрос
+                    </Button>
+                </>
+            )}
         </VStack>
     );
 };
