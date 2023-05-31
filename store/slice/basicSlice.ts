@@ -5,11 +5,13 @@ import type { RootState } from '../../store';
 // Define a type for the slice state
 interface CounterState {
     value: number;
+    isLogin: boolean;
 }
 
 // Define the initial state using that type
 const initialState: CounterState = {
     value: 0,
+    isLogin: false,
 };
 
 export const counterSlice = createSlice({
@@ -17,19 +19,12 @@ export const counterSlice = createSlice({
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        increment: (state) => {
-            state.value += 1;
-        },
-        decrement: (state) => {
-            state.value -= 1;
-        },
-        // Use the PayloadAction type to declare the contents of `action.payload`
-        incrementByAmount: (state, action: PayloadAction<number>) => {
-            state.value += action.payload;
+        signIn: (state) => {
+            state.isLogin = true;
         },
     },
 });
 
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const { signIn } = counterSlice.actions;
 
 export default counterSlice.reducer;

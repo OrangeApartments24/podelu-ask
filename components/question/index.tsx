@@ -30,10 +30,13 @@ import { updateDo } from 'typescript';
 import { categoriesList } from '../../constants/categories';
 import { firebaseApp } from '../../pages/_app';
 import AddAnswer from '../addAnswer';
+import { useAppSelector } from '../../hooks/redux';
 
 const Question = () => {
     const router = useRouter();
     const { id } = router.query;
+
+    const { isLogin } = useAppSelector((store) => store.basic);
 
     const [question, loading, error] = useDocument(
         doc(getFirestore(firebaseApp), 'questions', String(id)),
@@ -41,6 +44,10 @@ const Question = () => {
             snapshotListenOptions: { includeMetadataChanges: true },
         }
     );
+
+    // useEffect(() => {
+    //     console.log(question?.data());
+    // }, [question]);
 
     const [answers, answersLoading, answersError] = useCollection(
         query(
@@ -152,12 +159,21 @@ const Question = () => {
                     {question?.data()?.text}
                 </Text>
             </Card>
-            <Card p={2} bg='white' w='full'>
+            <Card p={4} bg='white' w='full'>
                 <FormControl>
                     <FormLabel>Категория</FormLabel>
-                    <Select onChange={changeCategoryHandler}>
-                        {renderCategories}
-                    </Select>
+                    {isLogin ? (
+                        <Select
+                            value={question?.data().category}
+                            onChange={changeCategoryHandler}
+                        >
+                            {renderCategories}
+                        </Select>
+                    ) : (
+                        <Heading size={'sm'} m={'0!'}>
+                            {question?.data().category || 'Без категории'}
+                        </Heading>
+                    )}
                 </FormControl>
             </Card>
             <Heading fontSize='20px' mr='auto!' mt={'8!'}>
@@ -205,7 +221,7 @@ const Question = () => {
                         </Card>
                     );
                 })}
-            <AddAnswer />
+            {isLogin && <AddAnswer />}
         </VStack>
     );
 };

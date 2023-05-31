@@ -5,6 +5,8 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { initializeApp } from 'firebase/app';
 import 'firebase/firestore';
 import 'moment/locale/ru';
+import { Provider } from 'react-redux';
+import { store } from '../store';
 
 export const firebaseApp = initializeApp({
     apiKey: 'AIzaSyDln11HXwFB7pIYD_ySyIl_j1RWnurxJ34',
@@ -18,8 +20,10 @@ export const firebaseApp = initializeApp({
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
-        <ChakraProvider resetCSS>
-            <Component {...pageProps} />
-        </ChakraProvider>
+        <Provider store={store}>
+            <ChakraProvider resetCSS>
+                <Component {...pageProps} />
+            </ChakraProvider>
+        </Provider>
     );
 }

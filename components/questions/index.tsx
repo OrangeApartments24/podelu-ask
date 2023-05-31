@@ -96,11 +96,11 @@ const Questions = () => {
                                     {doc.data().text}
                                 </Text>
                                 <HStack>
-                                    <Text fontSize='sm' opacity={0.5}>
+                                    {/* <Text fontSize='sm' opacity={0.5}>
                                         {moment
                                             .unix(doc.data().created_at)
                                             .format('DD MMMM YYYY')}
-                                    </Text>
+                                    </Text> */}
                                     {doc.data().category && (
                                         <Text fontSize='sm' opacity={0.5}>
                                             {doc.data().category}
