@@ -50,8 +50,11 @@ const Questions = () => {
             {
                 text: questionText,
                 created_at: Timestamp.fromDate(new Date()),
+                category: name,
             }
-        );
+        ).catch((e) => {
+            console.log(e);
+        });
         setQuestionText('');
     }, [questionText]);
 
